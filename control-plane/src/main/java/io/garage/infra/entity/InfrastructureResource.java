@@ -1,7 +1,6 @@
-package io.garage.domain;
+package io.garage.infra.entity;
 
-import io.garage.domain.enums.ResourceStatusEnum;
-import io.garage.domain.enums.ResourceTypeEnum;
+import io.garage.orchestration.entity.ProvisioningTask;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 

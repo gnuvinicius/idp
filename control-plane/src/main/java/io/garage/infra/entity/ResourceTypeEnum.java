@@ -1,4 +1,4 @@
-package io.garage.domain.enums;
+package io.garage.infra.entity;
 
 public enum ResourceTypeEnum {
     AWS_S3_BUCKET,

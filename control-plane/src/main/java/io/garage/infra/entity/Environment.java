@@ -1,7 +1,8 @@
-package io.garage.domain;
+package io.garage.infra.entity;
 
 import java.time.Instant;
 
+import io.garage.catalog.entity.Project;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 

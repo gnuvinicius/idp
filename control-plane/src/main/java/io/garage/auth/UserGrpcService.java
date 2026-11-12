@@ -1,18 +1,16 @@
 package io.garage.auth;
 
 import io.garage.auth.grpc.*;
-import io.garage.domain.User;
-import io.garage.domain.enums.UserRoleEnum;
 import io.garage.exceptions.DomainException;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.grpc.GrpcService;
 import io.smallrye.common.annotation.Blocking;
+import io.smallrye.jwt.build.Jwt;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.smallrye.mutiny.unchecked.Unchecked;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +22,6 @@ import java.time.Instant;
 public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
     private static final Logger log = LoggerFactory.getLogger(UserGrpcService.class);
-
-    @Inject
-    TokenService tokenService;
 
     @Override
     @Transactional
@@ -79,7 +74,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
                         }
 
                         Instant expiry = Instant.now().plus(Duration.ofHours(8));
-                        String token = tokenService.generateToken(user);
+                        String token = generateToken(user);
 
                         return LoginResponse.newBuilder()
                                 .setToken(token)
@@ -97,5 +92,16 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
                         }, response::onError
 
                 );
+    }
+
+    private String generateToken(User user) {
+        return Jwt
+                .subject(user.id.toString())
+                .claim("username", user.username)
+                .claim("email", user.email)
+                .upn(user.email)
+                .groups(user.role.toString())
+                .expiresIn(Duration.ofHours(8))
+                .sign();
     }
 }
