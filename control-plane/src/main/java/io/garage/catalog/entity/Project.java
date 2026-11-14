@@ -21,6 +21,10 @@ public class Project extends PanacheEntity {
     @Column(name = "default_branch")
     public String defaultBranch = "main";
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    public ProjectStatusEnum status = ProjectStatusEnum.ACTIVE;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     public User user;
@@ -28,5 +32,14 @@ public class Project extends PanacheEntity {
     @ManyToOne
     public Template templateUsed;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
     public Instant createdAt = Instant.now();
+
+    @Column(name = "updated_at", nullable = false)
+    public Instant updatedAt;
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }
