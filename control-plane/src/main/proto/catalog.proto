@@ -7,10 +7,8 @@ option java_package = "io.garage.catalog.grpc";
 option go_package = "github.com/gnuvinicius/idp/cli/proto/catalog";
 
 service TemplateService {
-  rpc CreateTemplate (CreateTemplateRequest) returns (TemplateResponse);
-  rpc GetTemplate (GetTemplateRequest) returns (TemplateResponse);
+  rpc ApplyTemplates (ApplyTemplatesRequest) returns (ApplyTemplatesResponse);
   rpc ListTemplate (ListTemplatesRequest) returns (ListTemplatesResponse);
-  rpc UpdateTemplate (UpdateTemplateRequest) returns (TemplateResponse);
   rpc DeleteTemplate (DeleteTemplateRequest) returns (DeleteTemplateResponse);
 }
 
@@ -26,16 +24,15 @@ service ProjectService {
 // TEMPLATE MESSAGES (Golden Paths)
 // ============================================================================
 
-message CreateTemplateRequest {
-  string name = 1;
-  string description = 2;
-  string repository_url = 3;         // Ex: https://github.com/org/template-quarkus-api
-  string stack = 4;                  // Ex: "java-quarkus", "go-cli", "react"
-  string default_parameters_json = 5; // Schema ou valores padrão para scaffolding
+message ApplyTemplatesRequest {
+  bytes yaml_content = 1;
 }
 
-message GetTemplateRequest {
-  string id = 1;
+message ApplyTemplatesResponse {
+  int32 created = 1;
+  int32 updated = 2;
+  int32 unchanged = 3;
+//  repeated TemplateResponse templates = 4;
 }
 
 message ListTemplatesRequest {
@@ -44,15 +41,6 @@ message ListTemplatesRequest {
 
 message ListTemplatesResponse {
   repeated TemplateResponse templates = 1;
-}
-
-message UpdateTemplateRequest {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  string repository_url = 4;
-  string stack = 5;
-  string default_parameters_json = 6;
 }
 
 message DeleteTemplateRequest {

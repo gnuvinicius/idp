@@ -11,7 +11,6 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
-import io.smallrye.mutiny.unchecked.Unchecked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,35 +69,36 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void login(LoginRequest request, StreamObserver<LoginResponse> response) {
         log.info("login");
-        Uni.createFrom().item(Unchecked.supplier(() -> {
-                    try {
-                        User user = User.<User>find("username", request.getUsername())
-                                .firstResult();
+        Uni.createFrom().item(() ->
+                        QuarkusTransaction.requiringNew().call(() -> {
+                            User user = User.<User>find("username", request.getUsername())
+                                    .firstResult();
 
-                        if (user == null || !BcryptUtil.matches(request.getPassword(), user.passwordHash)) {
-                            throw Status.UNAUTHENTICATED
-                                    .withDescription("invalid credentials")
-                                    .asRuntimeException();
-                        }
+                            if (user == null || !BcryptUtil.matches(request.getPassword(), user.passwordHash)) {
+                                throw Status.UNAUTHENTICATED
+                                        .withDescription("invalid credentials")
+                                        .asRuntimeException();
+                            }
 
-                        Instant expiry = Instant.now().plus(Duration.ofHours(8));
-                        String token = generateToken(user);
+                            Instant expiry = Instant.now().plus(Duration.ofHours(8));
+                            String token = generateToken(user);
 
-                        return LoginResponse.newBuilder()
-                                .setToken(token)
-                                .setExpiresAt(expiry.getEpochSecond())
-                                .build();
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                        throw e;
-                    }
-                }))
-                .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
-                .subscribe().with(item -> {
+                            return LoginResponse.newBuilder()
+                                    .setToken(token)
+                                    .setExpiresAt(expiry.getEpochSecond())
+                                    .build();
+                        })
+                ).runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
+                .onFailure(StatusRuntimeException.class).invoke(e ->
+                        log.error("failed login attempt for {}: {}", request.getUsername(), e.getMessage()))
+                .onFailure(e -> !(e instanceof StatusRuntimeException)).invoke(e ->
+                        log.error("unexpected error during login: {}", e.getMessage(), e))
+                .subscribe().with(
+                        item -> {
                             response.onNext(item);
                             response.onCompleted();
-                        }, response::onError
-
+                        },
+                        response::onError
                 );
     }
 
@@ -119,6 +119,10 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
                 .asRuntimeException();
     }
 
+    /**
+     * se precisar ler atributos lazy do usuario, deve colocar o esse bloco de codigo dentro do
+     * bloco transacional para evitar LazyInitialzationException
+     */
     private String generateToken(User user) {
         return Jwt
                 .subject(user.id.toString())

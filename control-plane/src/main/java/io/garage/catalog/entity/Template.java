@@ -1,5 +1,6 @@
 package io.garage.catalog.entity;
 
+import io.garage.catalog.TemplateSpec;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,4 +32,18 @@ public class Template extends PanacheEntity {
 
     @Column(name = "git_repository_url", nullable = false)
     public String gitRepositoryUrl;
+
+    public Template(TemplateSpec spec) {
+        this.name = spec.name();
+        this.description = spec.description();
+        this.gitRepositoryUrl = spec.gitRepositoryUrl();
+    }
+
+    public Template() {
+
+    }
+
+    public static Template findByName(String name) {
+        return find("name", name).firstResult();
+    }
 }

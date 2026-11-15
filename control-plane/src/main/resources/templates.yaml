@@ -1,0 +1,4 @@
+templates:
+  - name: string
+    description: string
+    gitRepositoryUrl: string
