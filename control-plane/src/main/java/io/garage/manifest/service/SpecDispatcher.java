@@ -21,13 +21,13 @@ public class SpecDispatcher {
                 .collect(Collectors.toMap(SpecApplier::specType, Function.identity()));
     }
 
-    public void dispatch(Spec spec) {
+    public ApplyResult dispatch(Spec spec) {
         SpecApplier<?> applier = appliers.get(spec.getClass());
         if (applier == null) {
             throw Status.UNIMPLEMENTED
                     .withDescription("No applier registered for spec: " + spec.getClass().getSimpleName())
                     .asRuntimeException();
         }
-        applier.applyRaw(spec);
+        return applier.applyRaw(spec);
     }
 }

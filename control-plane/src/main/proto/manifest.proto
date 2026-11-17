@@ -12,14 +12,19 @@ service ManifestService {
   rpc ValidateManifest (ManifestRequest) returns (ValidateManifestResponse);
 }
 
+message ApplyResultResponse {
+  string type = 1;
+  string name = 2;
+  string status = 3;
+  string message = 4;
+}
+
 message ManifestRequest {
   bytes yaml_content = 1;
 }
 
 message ApplyManifestResponse {
-  int32 created = 1;
-  int32 updated = 2;
-  int32 unchanged = 3;
+  repeated ApplyResultResponse results = 1;
 }
 
 message ValidateManifestResponse {

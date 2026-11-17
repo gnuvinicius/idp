@@ -6,5 +6,4 @@ public record ProjectSpec(
         String repositoryUrl,
         String template
 ) implements Spec {
-
 }

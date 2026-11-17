@@ -12,8 +12,6 @@ public interface Spec {
 
     default void validateRules() {}
 
-    void applySpec();
-
     static Spec parse(String type, JsonNode spec) {
         if (type == null || type.isBlank()) {
             throw Status.INVALID_ARGUMENT

@@ -13,14 +13,15 @@ public class TemplateSpecApplier implements SpecApplier<TemplateSpec> {
     }
 
     @Override
-    public void apply(TemplateSpec spec) {
+    public ApplyResult apply(TemplateSpec spec) {
         Template existing = Template.findByName(spec.name());
 
         if (existing == null) {
             Template entity = new Template(spec);
             entity.persist();
+            return ApplyResult.created(ManifestyTypeEnum.TEMPLATE, spec.name());
         } else {
-            // todo:
+            return ApplyResult.updated(ManifestyTypeEnum.TEMPLATE, spec.name());
         }
     }
 
