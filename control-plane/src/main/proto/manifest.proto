@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package garage.manifest;
+
+option java_multiple_files = true;
+option java_outer_classname = "ManifestProto";
+option java_package = "io.garage.manifest.grpc";
+option go_package = "github.com/gnuvinicius/idp/cli/proto/manifest";
+
+service ManifestService {
+  rpc ApplyManifest (ManifestRequest) returns (ApplyManifestResponse);
+  rpc ValidateManifest (ManifestRequest) returns (ValidateManifestResponse);
+}
+
+message ManifestRequest {
+  bytes yaml_content = 1;
+}
+
+message ApplyManifestResponse {
+  int32 created = 1;
+  int32 updated = 2;
+  int32 unchanged = 3;
+}
+
+message ValidateManifestResponse {
+  string status = 1;
+}

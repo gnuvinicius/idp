@@ -1,6 +1,6 @@
 package io.garage.catalog.entity;
 
-import io.garage.catalog.TemplateSpec;
+import io.garage.manifest.model.TemplateSpec;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

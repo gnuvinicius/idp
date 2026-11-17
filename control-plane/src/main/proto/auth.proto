@@ -4,6 +4,7 @@ package garage.auth;
 
 option java_multiple_files = true;
 option java_package = "io.garage.auth.grpc";
+option java_outer_classname = "AuthProto";
 option go_package = "github.com/gnuvinicius/idp/cli/proto/auth";
 
 service AuthService {

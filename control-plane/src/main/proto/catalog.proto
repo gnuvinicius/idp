@@ -4,36 +4,23 @@ package garage.catalog;
 
 option java_multiple_files = true;
 option java_package = "io.garage.catalog.grpc";
+option java_outer_classname = "CatalogProto";
 option go_package = "github.com/gnuvinicius/idp/cli/proto/catalog";
 
 service TemplateService {
-  rpc ApplyTemplates (ApplyTemplatesRequest) returns (ApplyTemplatesResponse);
   rpc ListTemplate (ListTemplatesRequest) returns (ListTemplatesResponse);
   rpc DeleteTemplate (DeleteTemplateRequest) returns (DeleteTemplateResponse);
 }
 
 service ProjectService {
-  rpc CreateProject (CreateProjectRequest) returns (ProjectResponse);
   rpc GetProject (GetProjectRequest) returns (ProjectResponse);
   rpc ListProjects (ListProjectsRequest) returns (ListProjectsResponse);
-  rpc UpdateProject (UpdateProjectRequest) returns (ProjectResponse);
   rpc DeleteProject (DeleteProjectRequest) returns (DeleteProjectResponse);
 }
 
 // ============================================================================
 // TEMPLATE MESSAGES (Golden Paths)
 // ============================================================================
-
-message ApplyTemplatesRequest {
-  bytes yaml_content = 1;
-}
-
-message ApplyTemplatesResponse {
-  int32 created = 1;
-  int32 updated = 2;
-  int32 unchanged = 3;
-//  repeated TemplateResponse templates = 4;
-}
 
 message ListTemplatesRequest {
   string stack = 1; // Filtro opcional por stack
@@ -73,13 +60,6 @@ enum ProjectStatus {
   PROVISIONING_FAILED = 3;
 }
 
-message CreateProjectRequest {
-  string name = 1;             // Nome/slug do repositório a ser criado no GitHub
-  string description = 2;
-  string template_id = 3;      // Golden Path base para clonar o repositório
-  string parameters_json = 4;  // Variáveis customizadas (ex: groupId, porta, etc.)
-}
-
 message GetProjectRequest {
   string id = 1;
 }
@@ -91,12 +71,6 @@ message ListProjectsRequest {
 
 message ListProjectsResponse {
   repeated ProjectResponse projects = 1;
-}
-
-message UpdateProjectRequest {
-  string id = 1;
-  string description = 2;
-  ProjectStatus status = 3;
 }
 
 message DeleteProjectRequest {
