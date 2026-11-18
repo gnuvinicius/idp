@@ -30,13 +30,13 @@ public class Template extends PanacheEntity {
 
     public String description;
 
-    @Column(name = "git_repository_url", nullable = false)
-    public String gitRepositoryUrl;
+    @Column(name = "repository_url", nullable = false)
+    public String repositoryUrl;
 
     public Template(TemplateSpec spec) {
         this.name = spec.name();
         this.description = spec.description();
-        this.gitRepositoryUrl = spec.gitRepositoryUrl();
+        this.repositoryUrl = spec.repositoryUrl();
     }
 
     public Template() {

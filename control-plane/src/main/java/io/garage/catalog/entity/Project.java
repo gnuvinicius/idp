@@ -38,8 +38,30 @@ public class Project extends PanacheEntity {
     @Column(name = "updated_at", nullable = false)
     public Instant updatedAt;
 
+    public Project() {
+    }
+
+    public Project(String name,
+                   String description,
+                   String repositoryUrl,
+                   Template template,
+                   User user) {
+        this.name = name;
+        this.description = description;
+        this.repositoryUrl = repositoryUrl;
+        this.templateUsed = template;
+        this.user = user;
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    public static Project findByName(String name) {
+        return find("name", name).firstResult();
+    }
+
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = Instant.now();
     }
+
 }

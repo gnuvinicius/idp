@@ -13,7 +13,7 @@ public class TemplateSpecApplier implements SpecApplier<TemplateSpec> {
     }
 
     @Override
-    public ApplyResult apply(TemplateSpec spec) {
+    public ApplyResult apply(TemplateSpec spec, ApplyContext context) {
         Template existing = Template.findByName(spec.name());
 
         if (existing == null) {

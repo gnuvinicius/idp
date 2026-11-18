@@ -5,6 +5,6 @@ import java.util.Map;
 public record TemplateSpec(
         String name,
         String description,
-        String gitRepositoryUrl,
+        String repositoryUrl,
         Map<String, Object> defaultParameters
 ) implements Spec {}

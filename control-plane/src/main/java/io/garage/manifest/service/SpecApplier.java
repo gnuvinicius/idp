@@ -6,9 +6,9 @@ public interface SpecApplier<T extends Spec> {
 
     Class<T> specType();
 
-    ApplyResult apply(T spec);
+    ApplyResult apply(T spec, ApplyContext context);
 
-    default ApplyResult applyRaw(Spec spec) {
-        return apply(specType().cast(spec));
+    default ApplyResult applyRaw(Spec spec, ApplyContext context) {
+        return apply(specType().cast(spec), context);
     }
 }
