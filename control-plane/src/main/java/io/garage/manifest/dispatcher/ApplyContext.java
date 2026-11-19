@@ -1,4 +1,4 @@
-package io.garage.manifest.service;
+package io.garage.manifest.dispatcher;
 
 import io.garage.auth.User;
 import io.garage.auth.UserRoleEnum;

@@ -1,6 +1,7 @@
 package io.garage.auth;
 
 import io.garage.auth.grpc.*;
+import io.garage.common.Message;
 import io.garage.exceptions.DomainException;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -63,7 +64,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
                             response.onNext(resp);
                             response.onCompleted();
                         },
-                        error -> response.onError(toGrpcError(error)));
+                        error -> response.onError(Message.toGrpcError(error)));
     }
 
     @Override
@@ -100,23 +101,6 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
                         },
                         response::onError
                 );
-    }
-
-    private Throwable toGrpcError(Throwable t) {
-        if (t instanceof StatusRuntimeException sre) {
-            return sre;
-        }
-        if (t instanceof DomainException de) {
-            log.warn("{}: {}", "domain exception:", de.getMessage());
-            return Status.ALREADY_EXISTS
-                    .withDescription(de.getMessage())
-                    .asRuntimeException();
-        }
-
-        log.error("{}: {}", "domain exception:", t.getMessage(), t);
-        return Status.INTERNAL
-                .withDescription(t.getClass().getSimpleName() + ": " + t.getMessage())
-                .asRuntimeException();
     }
 
     /**

@@ -3,6 +3,7 @@ package io.garage.catalog.entity;
 import java.time.Instant;
 
 import io.garage.auth.User;
+import io.grpc.Status;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 
@@ -29,7 +30,8 @@ public class Project extends PanacheEntity {
     @JoinColumn(name = "user_id")
     public User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "template_id")
     public Template templateUsed;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -46,6 +48,12 @@ public class Project extends PanacheEntity {
                    String repositoryUrl,
                    Template template,
                    User user) {
+        if (template == null) {
+            throw Status.INVALID_ARGUMENT
+                    .withDescription("template is required")
+                    .asRuntimeException();
+        }
+
         this.name = name;
         this.description = description;
         this.repositoryUrl = repositoryUrl;
@@ -64,4 +72,12 @@ public class Project extends PanacheEntity {
         this.updatedAt = Instant.now();
     }
 
+    public void updateEntity(String name, String description, String repositoryUrl, Template template, User user) {
+        this.name = name;
+        this.description = description;
+        this.templateUsed = template;
+        this.user = user;
+        this.repositoryUrl = repositoryUrl;
+        this.updatedAt = Instant.now();
+    }
 }

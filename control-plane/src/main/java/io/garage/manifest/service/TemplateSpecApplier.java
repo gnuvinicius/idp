@@ -1,6 +1,10 @@
 package io.garage.manifest.service;
 
 import io.garage.catalog.entity.Template;
+import io.garage.manifest.dispatcher.ApplyContext;
+import io.garage.manifest.dispatcher.ApplyResult;
+import io.garage.manifest.dispatcher.ManifestyTypeEnum;
+import io.garage.manifest.dispatcher.SpecApplier;
 import io.garage.manifest.model.TemplateSpec;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -18,7 +22,7 @@ public class TemplateSpecApplier implements SpecApplier<TemplateSpec> {
 
         if (existing == null) {
             Template entity = new Template(spec);
-            entity.persist();
+            entity.persistAndFlush();
             return ApplyResult.created(ManifestyTypeEnum.TEMPLATE, spec.name());
         } else {
             return ApplyResult.updated(ManifestyTypeEnum.TEMPLATE, spec.name());

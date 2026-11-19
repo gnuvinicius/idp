@@ -2,12 +2,13 @@ package io.garage.manifest.grpc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import io.garage.common.Message;
 import io.garage.common.Validators;
 import io.garage.exceptions.DomainException;
 import io.garage.manifest.model.Manifest;
 import io.garage.manifest.model.Metadata;
-import io.garage.manifest.service.ApplyResult;
-import io.garage.manifest.service.SpecDispatcher;
+import io.garage.manifest.dispatcher.ApplyResult;
+import io.garage.manifest.dispatcher.SpecDispatcher;
 import io.grpc.stub.StreamObserver;
 import io.quarkus.grpc.GrpcService;
 import io.quarkus.narayana.jta.QuarkusTransaction;
@@ -62,7 +63,7 @@ public class ManifestGrpcService extends ManifestServiceGrpc.ManifestServiceImpl
                 .subscribe().with(resp -> {
                             response.onNext(resp);
                             response.onCompleted();
-                        }, response::onError
+                        }, error -> response.onError(Message.toGrpcError(error))
                 );
     }
 }

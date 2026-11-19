@@ -1,4 +1,4 @@
-package io.garage.manifest.service;
+package io.garage.manifest.dispatcher;
 
 public enum ApplyStatusEnum {
     CREATED,

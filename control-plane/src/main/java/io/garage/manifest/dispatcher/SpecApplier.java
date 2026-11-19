@@ -1,4 +1,4 @@
-package io.garage.manifest.service;
+package io.garage.manifest.dispatcher;
 
 import io.garage.manifest.model.Spec;
 
