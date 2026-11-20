@@ -39,9 +39,7 @@ public class Template extends PanacheEntity {
         this.repositoryUrl = spec.repositoryUrl();
     }
 
-    public Template() {
-
-    }
+    public Template() {}
 
     public static Template findByName(String name) {
         return find("name", name).firstResult();

@@ -6,9 +6,9 @@ import io.grpc.StatusRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Message {
+public class GrpcMessage {
 
-    private static final Logger log = LoggerFactory.getLogger(Message.class);
+    private static final Logger log = LoggerFactory.getLogger(GrpcMessage.class);
 
     public static Throwable toGrpcError(Throwable t) {
         if (t instanceof StatusRuntimeException sre) {

@@ -1,7 +1,7 @@
 package io.garage.auth;
 
 import io.garage.auth.grpc.*;
-import io.garage.common.Message;
+import io.garage.common.GrpcMessage;
 import io.garage.exceptions.DomainException;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -64,7 +64,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
                             response.onNext(resp);
                             response.onCompleted();
                         },
-                        error -> response.onError(Message.toGrpcError(error)));
+                        error -> response.onError(GrpcMessage.toGrpcError(error)));
     }
 
     @Override

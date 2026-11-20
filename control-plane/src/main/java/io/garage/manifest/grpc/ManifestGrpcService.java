@@ -2,7 +2,7 @@ package io.garage.manifest.grpc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import io.garage.common.Message;
+import io.garage.common.GrpcMessage;
 import io.garage.common.Validators;
 import io.garage.exceptions.DomainException;
 import io.garage.manifest.model.Manifest;
@@ -63,7 +63,7 @@ public class ManifestGrpcService extends ManifestServiceGrpc.ManifestServiceImpl
                 .subscribe().with(resp -> {
                             response.onNext(resp);
                             response.onCompleted();
-                        }, error -> response.onError(Message.toGrpcError(error))
+                        }, error -> response.onError(GrpcMessage.toGrpcError(error))
                 );
     }
 }
